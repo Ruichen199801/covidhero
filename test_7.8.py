@@ -87,7 +87,7 @@ class Game:  # 游戏页面跳转：欢迎--游戏中--结束
             vaccine.center = 1000, 600
             if doctor.colliderect(vaccine):
 
-                if gamelevel < 3:
+                if gamelevel < 10:
                     self.gameOn = 3  # 进入下一关卡
                     self.gameMessage = "You Win!\nPRESS SPACE TO THE NEXT LEVEL"
 
@@ -109,9 +109,9 @@ game = Game()
 def reset():
     global gamelevel
     # 重开游戏之后对医生初始化
-    doctor.life = 150 + 20 * (gamelevel-1)#调试
+    doctor.life = 150 + 20 * gamelevel #调试
     doctor.pos = 50, 100
-    doctor.target_pt = 200 + 100 * (gamelevel-1)
+    doctor.target_pt = 200 + 100 * gamelevel
     doctor.temp_pt = 0
     star = time.time()
     gamelevel += 1
