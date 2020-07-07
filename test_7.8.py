@@ -87,7 +87,7 @@ class Game:  # 游戏页面跳转：欢迎--游戏中--结束
             vaccine.center = 1000, 600
             if doctor.colliderect(vaccine):
 
-                if gamelevel < 10:
+                if gamelevel < 2:
                     self.gameOn = 3  # 进入下一关卡
                     self.gameMessage = "You Win!\nPRESS SPACE TO THE NEXT LEVEL"
 
@@ -109,7 +109,7 @@ game = Game()
 def reset():
     global gamelevel
     # 重开游戏之后对医生初始化
-    doctor.life = 150 + 20 * gamelevel #调试
+    doctor.life = 150 # + 20 * (gamelevel-1)
     doctor.pos = 50, 100
     doctor.target_pt = 200 + 100 * gamelevel
     doctor.temp_pt = 0
@@ -140,13 +140,13 @@ def draw():
         screen.clear()
         screen.blit('deadpage', (0, 0))
         screen.draw.text(
-            game.gameMessage, color="white", center=(HEIGHT * 2 / 3, WIDTH / 2)
+            game.gameMessage, color="white", center=(HEIGHT * 6 / 7, WIDTH / 2)
         )
     elif game.gameOn == 3:
         screen.clear()
         screen.blit('win_stage', (0, 0))
         screen.draw.text(
-            game.gameMessage, color="black", center=(HEIGHT * 2 / 3, WIDTH / 2)
+            game.gameMessage, color="black", center=(HEIGHT * 3 / 4, WIDTH / 2)
         )
     elif game.gameOn == 4:
         screen.clear()
@@ -199,7 +199,7 @@ def draw():
 
         # 医生的属性
         global gamelevel
-        screen.draw.text("LEVEL %d / 3\n" % gamelevel, (10, 10), color="white")
+        screen.draw.text("LEVEL %d / 10\n" % gamelevel, (10, 10), color="white")
         screen.draw.text("HP: %d\n" % doctor.life, (10, 40), color="white")
         screen.draw.text("Mask (J): %d\n" % doctor.mask, (10, 80), color="white")
         screen.draw.text("Spray (K): %d\n" % doctor.dis, (10, 100), color="white")
@@ -409,7 +409,7 @@ def update():
             sounds.game_victory.play()
             game.play_sound = False
 
-    if game.gameOn == 1 and game.play_sound == False:
+    if game.gameOn == 1.5 and game.play_sound == False:
         game.play_sound = True
 
     game.checkGameOver()
