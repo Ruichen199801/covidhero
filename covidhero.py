@@ -105,6 +105,7 @@ game = Game()
 
 def reset():
     global gamelevel
+
     # 重开游戏之后对医生初始化
     doctor.life = 200+ 20 * gamelevel
     doctor.pos = 50, 100
@@ -113,6 +114,7 @@ def reset():
     star = time.time()
     gamelevel += 1
 
+    # 对病毒，传送门，疫苗初始化，道具和计时保留
     global num
     num = 6
     viruses.clear()
@@ -133,19 +135,19 @@ def draw():
     elif game.gameOn == 1.1:  # 规则
         screen.clear()
         screen.blit('rules-2', (0, 0))
-    elif game.gameOn == 2:
+    elif game.gameOn == 2:  # 失败
         screen.clear()
         screen.blit('deadpage', (0, 0))
         screen.draw.text(
             game.gameMessage, color="white", center=(HEIGHT * 6 / 7, WIDTH / 2)
         )
-    elif game.gameOn == 3:
+    elif game.gameOn == 3:  # 胜利
         screen.clear()
         screen.blit('win_stage', (0, 0))
         screen.draw.text(
             game.gameMessage, color="black", center=(HEIGHT * 3 / 4, WIDTH / 2)
         )
-    elif game.gameOn == 4:
+    elif game.gameOn == 4: # 最后通关
         screen.clear()
         screen.blit('endpage', (0, 0))
         x, y = 300, 250
@@ -210,7 +212,7 @@ def draw():
             vaccine_progress = 100
         else:
             vaccine_progress = 100 * round(doctor.temp_pt / doctor.target_pt, 2)
-        screen.draw.text("Vaccine: %d%%\n" % vaccine_progress, (10, 140), color="white")
+        screen.draw.text("Vaccine Process: %d%% / 100%%\n" % vaccine_progress, (10, 140), color="white")
 
         global maskstar, UsingMask
         if UsingMask:
@@ -227,6 +229,7 @@ def update():
     if game.gameOn == 1.5:
         doctor.move()
         global index, num, maskues, maskstar, UsingMask, disstar, UsingDis, disuse
+
         # 使用口罩
         if doctor.mask > 0 and keyboard[keys.J] and UsingMask == 0:
             sounds.wear_mask.play()
@@ -254,7 +257,7 @@ def update():
         if UsingDis == 1 and distime > 0.5:
             UsingDis = 0
 
-        # 毒和医生的碰撞
+        # 医生碰撞病毒扣血
         for v in viruses:
             v.move_v()
             if doctor.colliderect(v) and UsingMask == 0:
@@ -420,10 +423,10 @@ music.unpause()
 Allmask = []  # 界面上存在的口罩列表
 Alldis = []  # 界面上存在的消毒水列表
 Allgate = []  # 传送门列表
-gate_location = []
+gate_location = [] # 传送门位置列表
 Allcell = []  # 积分道具列表
-Vaccinelist = []
-Allgrade = {}
+Vaccinelist = [] # 疫苗列表
+Allgrade = {} # 积分列表
 
 num = 6
 index = 6
