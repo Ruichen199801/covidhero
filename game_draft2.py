@@ -1,17 +1,16 @@
 import pgzrun
 import random
 import time
-
 # import tkinter
 
 
-TITLE = "抗疫英雄"
+TITLE = "Covid Hero"
 WIDTH = 1200
 HEIGHT = 675
 
 
 class man(Actor):
-    life = 150  # 生命值
+    life = 200  # 生命值
     dis = 0  # 消毒水数量
     mask = 0  # 口罩数量
     target_pt = 200
@@ -37,7 +36,7 @@ class V(Actor):
         x = random.randint(1, 8)
         y = random.randint(1, 6)
         self.tag = i
-        self.hurt = 40 + 10 * gamelevel
+        self.hurt = 15 + 5 * gamelevel
         self.level = 1
         self.pos = x * 100, y * 100
         self.loop = 60
@@ -86,14 +85,12 @@ class Game:  # 游戏页面跳转：欢迎--游戏中--结束
             vaccine = Actor("zhenguan")
             vaccine.center = 1000, 600
             if doctor.colliderect(vaccine):
-
-                if gamelevel < 2:
+                if gamelevel < 10:
                     self.gameOn = 3  # 进入下一关卡
                     self.gameMessage = "You Win!\nPRESS SPACE TO THE NEXT LEVEL"
 
                 else:
                     self.gameOn = 4  # 游戏结束,胜利
-
                 if len(Allgrade) <= gamelevel:
                     global star
                     elap = time.time() - star  # 获取时间差
@@ -109,7 +106,7 @@ game = Game()
 def reset():
     global gamelevel
     # 重开游戏之后对医生初始化
-    doctor.life = 150 # + 20 * (gamelevel-1)
+    doctor.life = 200 + 20 * gamelevel#调试
     doctor.pos = 50, 100
     doctor.target_pt = 200 + 100 * gamelevel
     doctor.temp_pt = 0
@@ -180,6 +177,7 @@ def draw():
         screen.draw.text(
             "Time Used: %d mins %d secs" % (minutes, seconds), (10, 60), color="white"
         )
+
         # 画出界面上的对象
         doctor.draw()
         for v in viruses:
@@ -199,7 +197,10 @@ def draw():
 
         # 医生的属性
         global gamelevel
-        screen.draw.text("LEVEL %d / 10\n" % gamelevel, (10, 10), color="white")
+        if gamelevel == 0:
+            screen.draw.text("LEVEL %d (Tutorial Level)\n" % gamelevel, (10, 10), color="white")
+        else:
+            screen.draw.text("LEVEL %d / 10\n" % gamelevel, (10, 10), color="white")
         screen.draw.text("HP: %d\n" % doctor.life, (10, 40), color="white")
         screen.draw.text("Mask (J): %d\n" % doctor.mask, (10, 80), color="white")
         screen.draw.text("Spray (K): %d\n" % doctor.dis, (10, 100), color="white")
@@ -338,9 +339,7 @@ def update():
 
         # 生成传送门
         if luck % 100 == 0 and len(Allgate) < 2:
-
             sounds.portal_appear.play()
-
             m1 = Actor("gate")
             x = random.randint(2, 4)
             y = random.randint(1, 6)
@@ -412,11 +411,11 @@ def update():
     if game.gameOn == 1.5 and game.play_sound == False:
         game.play_sound = True
 
+
     game.checkGameOver()
 
 music.play("bgm")
 music.unpause()
-
 
 Allmask = []  # 界面上存在的口罩列表
 Alldis = []  # 界面上存在的消毒水列表
@@ -432,7 +431,7 @@ step = 50
 SPEED = 10
 w = 66
 h = 92
-gamelevel = 1
+gamelevel = 0
 
 doctor = man("yisheng")
 doctor.pos = 50, 100
