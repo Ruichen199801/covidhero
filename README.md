@@ -1,2 +1,2 @@
 # pku_pgzero
-Image and sound files for pgzero project
+Image and sound files for Covid Hero, a pgzero-based minigame project
