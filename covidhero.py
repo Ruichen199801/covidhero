@@ -2,7 +2,7 @@ import pgzrun
 import random
 import time
 # import tkinter
-
+from pgzero import music
 
 TITLE = "Covid Hero"
 WIDTH = 1200
@@ -106,7 +106,7 @@ game = Game()
 def reset():
     global gamelevel
     # 重开游戏之后对医生初始化
-    doctor.life = 200 + 20 * gamelevel#调试
+    doctor.life = 200+ 20 * gamelevel
     doctor.pos = 50, 100
     doctor.target_pt = 200 + 100 * gamelevel
     doctor.temp_pt = 0
@@ -132,7 +132,7 @@ def draw():
         screen.blit('startpage', (0, 0))
     elif game.gameOn == 1.1:  # 规则
         screen.clear()
-        screen.blit('rules', (0, 0))
+        screen.blit('rules-2', (0, 0))
     elif game.gameOn == 2:
         screen.clear()
         screen.blit('deadpage', (0, 0))
@@ -155,7 +155,7 @@ def draw():
             tmp = (minute * 60 + second) - (pre_m * 60 + pre_s)
             minute = tmp // 60
             second = tmp % 60
-            screen.draw.text("Level %d: %03d:%02d" % (i + 1, minute, second), color="white", topleft=(x, y))
+            screen.draw.text("Level %d: %03d:%02d" % (i, minute, second), color="white", topleft=(x, y))
             y += 40
         x, y = 500, 250
         for i in range(6, 11):
@@ -164,7 +164,7 @@ def draw():
             tmp = (minute * 60 + second) - (pre_m * 60 + pre_s)
             minute = tmp // 60
             second = tmp % 60
-            screen.draw.text("Level %d: %03d:%02d" % (i + 1, minute, second), color="white", topleft=(x, y))
+            screen.draw.text("Level %d: %03d:%02d" % (i, minute, second), color="white", topleft=(x, y))
             y += 40
     else:
         screen.clear()
@@ -360,15 +360,15 @@ def update():
         if luck % 400 == 0 and len(Allcell) == 0:
             sounds.item_generate.play()
             if luck == 400:
-                m = Actor("cell1")
+                m = Actor("macrophage")
             elif luck == 800:
-                m = Actor("cell2")
+                m = Actor("natural_killer")
             elif luck == 1200:
-                m = Actor("cell3")
+                m = Actor("cellt")
             elif luck == 1600:
-                m = Actor("cell4")
+                m = Actor("cellb")
             elif luck == 2000:
-                m = Actor("cell5")
+                m = Actor("dendritic_cell")
             x = random.randint(1, 8)
             y = random.randint(1, 6)
             m.pos = x * 100, y * 100
