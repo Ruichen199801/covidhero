@@ -106,7 +106,7 @@ game = Game()
 def reset():
     global gamelevel
     # 重开游戏之后对医生初始化
-    doctor.life = 200+ 20 * gamelevel#调试
+    doctor.life = 200 + 20 * gamelevel#调试
     doctor.pos = 50, 100
     doctor.target_pt = 200 + 100 * gamelevel
     doctor.temp_pt = 0
@@ -155,7 +155,7 @@ def draw():
             tmp = (minute * 60 + second) - (pre_m * 60 + pre_s)
             minute = tmp // 60
             second = tmp % 60
-            screen.draw.text("Level %d: %03d:%02d" % (i, minute, second), color="white", topleft=(x, y))
+            screen.draw.text("Level %d: %03d:%02d" % (i + 1, minute, second), color="white", topleft=(x, y))
             y += 40
         x, y = 500, 250
         for i in range(6, 11):
@@ -164,7 +164,7 @@ def draw():
             tmp = (minute * 60 + second) - (pre_m * 60 + pre_s)
             minute = tmp // 60
             second = tmp % 60
-            screen.draw.text("Level %d: %03d:%02d" % (i, minute, second), color="white", topleft=(x, y))
+            screen.draw.text("Level %d: %03d:%02d" % (i + 1, minute, second), color="white", topleft=(x, y))
             y += 40
     else:
         screen.clear()
@@ -232,7 +232,7 @@ def update():
             sounds.wear_mask.play()
             doctor.mask -= 1
             UsingMask = 1
-            maskstar = time.time()a
+            maskstar = time.time()
         maskuse = time.time()
         masktime = int(maskuse - maskstar)
         if masktime > 3 and UsingMask:
