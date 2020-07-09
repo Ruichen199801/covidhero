@@ -83,7 +83,7 @@ class Game:  # 游戏页面跳转：初始页面--规则说明--游戏中--结�
             global flag
             flag += 1
             if (
-                flag == 1 and gamelevel >= 1
+                flag == 1 and gamelevel >= 1 and Allgrade
             ):  # 仅在第一次checkGameOver时记录成绩信息；只有通过第一关的成绩才需要记录
                 minutes, seconds = Allgrade[gamelevel - 1]
                 elap = int(60 * minutes + seconds)
@@ -134,7 +134,7 @@ game = Game()
 
 
 def reset():
-    global gamelevel
+    global gamelevel,star
     # 重开游戏之后对医生初始化
     doctor.life = 200 + 20 * gamelevel
     doctor.pos = 50, 100
@@ -144,8 +144,11 @@ def reset():
     file_flag = 0
     star = time.time()
     gamelevel += 1
-
-    # 对病毒，传送门，疫苗初始化，道具和计时保留
+    Alldis.clear()
+    Allmask.clear()
+    doctor.dis=0
+    doctor.mask=0
+    # 对病毒，传送门，疫苗初始化
     global num
     num = 6
     viruses.clear()
@@ -185,10 +188,6 @@ def draw():
         x, y = 300, 250
         for i in range(1, 6):
             minute, second = Allgrade[i]
-            pre_m, pre_s = Allgrade[i - 1]
-            tmp = (minute * 60 + second) - (pre_m * 60 + pre_s)
-            minute = tmp // 60
-            second = tmp % 60
             screen.draw.text(
                 "Level %d: %03d:%02d" % (i, minute, second),
                 color="white",
@@ -199,10 +198,6 @@ def draw():
         x, y = 500, 250
         for i in range(6, 11):
             minute, second = Allgrade[i]
-            pre_m, pre_s = Allgrade[i - 1]
-            tmp = (minute * 60 + second) - (pre_m * 60 + pre_s)
-            minute = tmp // 60
-            second = tmp % 60
             screen.draw.text(
                 "Level %d: %03d:%02d" % (i, minute, second),
                 color="white",
@@ -236,7 +231,7 @@ def draw():
             if i > 10:
                 break
             screen.draw.text(
-                "Rank: %d          Levels: %d          Time Used: %d mins % dsecs"
+                "Rank: %d          Levels: %d          Time Used: %d mins %d secs"
                 % (i, r.level, r.time // 60, r.time % 60),
                 (320, y), color="white", fontsize=32,
             )
@@ -303,7 +298,6 @@ def draw():
                 "Mask Time Left: %d secs" % time_left, (500, 30), color="white"
             )
 
-
 def update():
     global Allmask, Alldis, gamelevel
 
@@ -326,11 +320,11 @@ def update():
         if keyboard[keys.K] and doctor.dis >= 1 and UsingDis == 0:
             sounds.spray.play()
             sounds.spray.play()
+            UsingDis = 1
             doctor.dis -= 1
             disstar = time.time()
 
             for v in viruses:
-                print(doctor.distance_to(v))
                 if doctor.distance_to(v) <= 400:
                     viruses.remove(v)
         disuse = time.time()
@@ -343,7 +337,10 @@ def update():
             v.move_v()
             if doctor.colliderect(v) and UsingMask == 0:
                 doctor.life -= v.hurt
-                sounds.hurt.play()
+                if v.hurt >= 30 or doctor.life <= 100:
+                    sounds.die.play()
+                else:
+                    sounds.hurt.play()
                 viruses.remove(v)
 
         # 病毒碰撞和合并
@@ -381,10 +378,10 @@ def update():
         if Allgate:
             if doctor.colliderect(Allgate[0]) and keyboard[keys.L]:
                 sounds.portal.play()
-                doctor.pos = gate_location[2], gate_location[3] - 66
+                doctor.pos = gate_location[2], gate_location[3]-66
             if doctor.colliderect(Allgate[1]) and keyboard[keys.L]:
                 sounds.portal.play()
-                doctor.pos = gate_location[0], gate_location[1] - 66
+                doctor.pos = gate_location[0], gate_location[1]-66
 
         # 积分道具的拾取
         if Allcell:
@@ -441,17 +438,17 @@ def update():
             gate_location.append(y)
 
         # 生成积分道具
-        if luck % 400 == 0 and len(Allcell) == 0:
+        if luck % 100 == 0 and len(Allcell) == 0:
             sounds.item_generate.play()
-            if luck == 400:
+            if luck <= 400:
                 m = Actor("macrophage")
-            elif luck == 800:
+            elif luck <= 800:
                 m = Actor("natural_killer")
-            elif luck == 1200:
+            elif luck <= 1200:
                 m = Actor("cellt")
-            elif luck == 1600:
+            elif luck <= 1600:
                 m = Actor("cellb")
-            elif luck == 2000:
+            elif luck <= 2000:
                 m = Actor("dendritic_cell")
             x = random.randint(1, 8)
             y = random.randint(1, 6)
